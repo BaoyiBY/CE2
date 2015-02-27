@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
@@ -38,16 +40,16 @@ public class TextBuddy_test{
 		
 		String[] commands = { "delete", "2" };
 		String expected = "deleted from mytestingfile.txt: \"jumped over the moon\"";
-		assertEquals(expected, TextBuddy.commandExecution("  mytestingfile.txt", commands));
+		assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt", commands));
 	}
 	
 	@Test
 	public void testDeleteIndexOutOfBounce()
 	{
 		String[] addCommands = { "add", "EE2024 Assignment1" };
-		TextBuddy.commandExecution("mytestfile.txt", addCommands);
+		TextBuddy.commandExecution("mytestingfile.txt", addCommands);
 		String[] addCommands2 = { "add", "jumped over the moon" };
-		TextBuddy.commandExecution("mytestfile.txt", addCommands2);
+		TextBuddy.commandExecution("mytestingfile.txt", addCommands2);
 		
 		String[] command = { "delete", "5" };
 		String expected = "This item do not exist!";
@@ -65,18 +67,18 @@ public class TextBuddy_test{
 		assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt", command));
 	}
 	
-	//@Test
-	//public void testDeleteEmptyInput()
-	//{
-		//String[] addCommands = { "add", "EE2024 Assignemnt1" };
-		//TextBuddy.commandExecution("mytestingfile.txt", addCommands);
-		//String[] addCommands2 = { "add", "jumped over the mood" };
-		//TextBuddy.commandExecution("mytestingfile.txt", addCommands2);
+	@Test
+	public void testDeleteEmptyInput()
+	{
+		String[] addCommands = { "add", "EE2024 Assignemnt1" };
+		TextBuddy.commandExecution("mytestingfile.txt", addCommands);
+		String[] addCommands2 = { "add", "jumped over the mood" };
+		TextBuddy.commandExecution("mytestingfile.txt", addCommands2);
 		
-		//String[] command = { "delete" };
-		//String expected = "This is a invalid arguments!";
-		//assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt", command));
-	//}
+		String[] command = { "delete" };
+		String expected = "Incorrect Argument!";
+		assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt", command));
+	}
 
 	
 			
@@ -127,7 +129,7 @@ public class TextBuddy_test{
 		String[] addCommand2 = { "add", "jumped over the moon" };
 		TextBuddy.commandExecution("mytestingfile.txt", addCommand2);
 		
-		String[] command = { "search", "1" };
+		String[] command = { "search", "one" };
 		String expected = "No such item";
 		assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt",command));
 	}
@@ -147,11 +149,12 @@ public class TextBuddy_test{
 		assertEquals(expected, TextBuddy.commandExecution("mytestingfile.txt",commandDisplay));
 	}
 		
-	//@After
-	//public void tearDown()
-	//{
-		//String[] command = { "clear" };
-		//TextBuddy.executeClear("mytestingfile.txt", command);
-	//}
+	@After
+	public void tearDown()
+	{
+		TextBuddy.clearArrayList();
+		File textList = new File("mytestingfile.txt");
+		textList.delete();
+	}
 	
 }

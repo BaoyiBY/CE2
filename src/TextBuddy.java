@@ -31,7 +31,7 @@ public class TextBuddy {
 
 	// This method is use to display the welcome message
 	private static void displayWelcomeMessage(String fileName) {
-		System.out.println("Welcome to TextBuddy." + fileName
+		System.out.println("Welcome to TextBuddy. " + fileName
 				+ " is ready for use");
 	}
 
@@ -115,7 +115,7 @@ public class TextBuddy {
 		while (true) {
 			input = sc.nextLine().trim().split(" ");
 			printMessageInput(commandExecution(fileName,input));
-			System.out.println("command: ");
+			System.out.print("command: ");
 		}
 	}
 
@@ -128,14 +128,13 @@ public class TextBuddy {
 			return executeAdd(fileName,input);
 		}
 		case DISPLAY: {
-			return executeDisplay(fileName);
+			return executeDisplay(fileName, input);
 		}
 		case DELETE: {
-			if (input.length == 2)
-				return executeDelete(fileName,Integer.parseInt(input[1]));
+			return executeDelete(fileName,input);
 		}
 		case CLEAR: {
-			return executeClear(fileName);
+			return executeClear(fileName, input);
 		}
 		case INVALID: {
 			return "Invalid Command!";
@@ -205,7 +204,11 @@ public class TextBuddy {
 	}
 
 	// This method is to display the command
-	private static String executeDisplay(String fileName) {
+	private static String executeDisplay(String fileName, String[] input) {
+		if(input.length != 1)
+		{
+			return "Please remove additional content";
+		}
 
 		String text = new String();
 
@@ -226,20 +229,44 @@ public class TextBuddy {
 	 * This method is to check which command to be deleted and print the deleted
 	 * command out
 	 */
-	private static String executeDelete(String fileName,int textListIndex) {
-
+	private static String executeDelete(String fileName,String[] input) {
+		if(input.length != 2){
+			return "Incorrect Argument!";
+		}
+		
+		if(!isIntegerBoolean(input[1])){
+			return "Please enter a number to delete!";
+		}
+		
+		int textListIndex = Integer.parseInt(input[1]);
 		if (textListIndex > 0 && textListIndex <= textList.size()) {
 			String removedText = textList.get(textListIndex - 1);
 			textList.remove(textListIndex - 1);
 			writeToFile(fileName);
-			return ("deleted from "+fileName +":\"" + removedText + "\"" );
+			return ("deleted from " + fileName +": \"" + removedText + "\"" );
 		}
 
 		return "This item do not exist!";
 	}
+	
+	private static boolean isIntegerBoolean(String input){
+		try{
+			Integer.parseInt(input);
+		} catch (NumberFormatException e){
+			return false;
+		}
+		
+		return true;
+	}
 
-	private static String executeClear(String fileName) {
-		textList.clear();// clear all contents from arraylist
+
+	private static String executeClear(String fileName, String[] input) {
+		if(input.length != 1){
+			return "Please remove additional text";
+		}
+		
+		
+		clearArrayList();// clear all contents from arraylist
 		try {
 			FileWriter fw = new FileWriter(fileName);// setup a file writer with
 														// nothing inside
@@ -251,6 +278,15 @@ public class TextBuddy {
 
 		return "Nothing to clear in the file";
 	}
+
+	/** I use public, so I can use for unit testing
+	 * 
+	 */
+	public static void clearArrayList() {
+		textList.clear();
+	}
+	
+	
 	
 	private static String executeSort(String fileName) {
 		Collections.sort(textList);
